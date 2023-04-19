@@ -40,10 +40,14 @@ imgExtract = ExtractByMask(in_raster = geoimg, in_mask_data = polyAOI)
 
 # create the 2-dimensional histogram as a raster layer
 arcpy.AddMessage("Calling image2hist...")
-AOIHistRaster = image2hist.image2hist(imgExtract, xband, yband) 
+AOIHistRaster = image2hist.image2hist(imgExtract, xband, yband)
+# define projection as custom Cartesian row-col coordinate system
+arcpy.AddMessage("Defining coordinate system...")
+coord_system = "CartesianRowCol_projection.prj"
+arcpy.management.DefineProjection(AOIHistRaster, coord_system) 
 
 # write to gdb, same name as input image with '_hist' suffix
-histRasterName = geoimg + '_AOI_hist' 
+histRasterName = geoimg + '_AOI2hist' 
 AOIHistRaster.save(histRasterName)
 
 # Confirm if map named 'Histogram' is present in the current project

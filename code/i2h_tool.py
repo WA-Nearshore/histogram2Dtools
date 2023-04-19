@@ -36,14 +36,18 @@ histlyrx = arcpy.GetParameter(1)
 xband = int(arcpy.GetParameterAsText(2))
 yband = int(arcpy.GetParameterAsText(3))
 
-arcpy.AddMessage("Calling image2hist ...\n")
-
 # image2hist() returns an ArcGIS raster object
+arcpy.AddMessage("Calling image2hist ...\n")
 histRaster = image2hist.image2hist(geoimg, xband, yband) 
+# define projection as custom Cartesian row-col coordinate system
+arcpy.AddMessage("Setting coordinate system...")
+coord_system = "CartesianRowCol_projection.prj"
+arcpy.management.DefineProjection(histRaster, coord_system)
 
 # write to gdb, same name as input image with '_hist' suffix
 histRasterName = geoimg + '_hist' 
 histRaster.save(histRasterName)
+arcpy.AddMessage("Histogram name: {0}".format(histRasterName))
 
 # Confirm if map named 'Histogram' is present in the current project
 currProject = arcpy.mp.ArcGISProject("CURRENT")
